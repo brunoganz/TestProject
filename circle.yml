@@ -1,0 +1,38 @@
+machine:
+  xcode:
+    version: "8.3.2"
+  environment:
+    GYM_CODE_SIGNING_IDENTITY: "iPhone Distribution: Michael Cunningham (LTQC954SPQ)"
+
+checkout:
+  post:
+    - git submodule sync
+    - git submodule update --init --recursive
+
+dependencies:
+  override:
+    - pod install:
+        timeout: 1800
+  cache_directories:
+    - "~/.cocoapods"
+test:
+  override:
+    - set -o pipefail &&
+      xcodebuild
+        -sdk iphonesimulator
+        -workspace ios-sdk.xcworkspace
+        -scheme "ios-sdk"
+        -destination 'platform=iOS Simulator,name=iPhone 6,OS=latest'
+        MAPZEN_API_KEY=$MAPZEN_API_KEY
+        HOCKEY_APP_ID=$HOCKEY_APP_ID
+        clean build test |
+      tee $CIRCLE_ARTIFACTS/xcode_raw.log |
+      xcpretty --color --report junit --output $CIRCLE_TEST_REPORTS/xcode/results.xml
+deployment:
+  alpha_distribution:
+    branch: master
+    commands: 
+      - fastlane master
+      - scripts/deploy.sh
+      - sudo pip install 'Circle-Beacon == 2.0.0'
+      - alert-circle mapzen documentation master $CIRCLE_TOKEN
