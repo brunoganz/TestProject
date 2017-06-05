@@ -10,9 +10,6 @@ checkout:
     - git submodule update --init --recursive
 
 dependencies:
-  override:
-    - pod install:
-        timeout: 1800
   cache_directories:
     - "~/.cocoapods"
 test:
