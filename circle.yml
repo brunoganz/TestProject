@@ -2,7 +2,7 @@ machine:
   xcode:
     version: "8.3.2"
   environment:
-    GYM_CODE_SIGNING_IDENTITY: "iPhone Distribution: Michael Cunningham (LTQC954SPQ)"
+    GYM_CODE_SIGNING_IDENTITY: "iPhone Distribution: Bruno Ganz (LTQC954SPQ)"
 
 checkout:
   post:
@@ -10,14 +10,12 @@ checkout:
     - git submodule update --init --recursive
 
 dependencies:
-  cache_directories:
-    - "~/.cocoapods"
 test:
   override:
     - set -o pipefail &&
       xcodebuild
         -sdk iphonesimulator
-        -workspace ios-sdk.xcworkspace
+        -workspace TestProject.xcworkspace
         -scheme "ios-sdk"
         -destination 'platform=iOS Simulator,name=iPhone 6,OS=latest'
         MAPZEN_API_KEY=$MAPZEN_API_KEY
