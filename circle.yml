@@ -14,9 +14,10 @@ test:
   override:
     - set -o pipefail &&
       xcodebuild
+        CODE_SIGNING_REQUIRED=NO
         -sdk iphonesimulator
         -workspace TestProject.xcworkspace
-        -scheme "ios-sdk"
+        -scheme "TestProject"
         -destination 'platform=iOS Simulator,name=iPhone 6,OS=latest'
         MAPZEN_API_KEY=$MAPZEN_API_KEY
         HOCKEY_APP_ID=$HOCKEY_APP_ID
